@@ -41,6 +41,12 @@ input{font-family:var(--jp)}
   letter-spacing:.42em; color:var(--muted); margin-top:10px}
 .suitline{display:flex; gap:14px; margin:18px 0 30px; color:var(--gold-dim); font-size:14px; letter-spacing:6px}
 .panel{width:100%; max-width:340px; display:flex; flex-direction:column; gap:12px}
+.pick-lbl{font-size:11px; letter-spacing:.2em; color:var(--muted); text-align:center; margin-bottom:-4px}
+.avatar-pick{display:grid; grid-template-columns:repeat(8,1fr); gap:6px}
+.avatar-pick button{aspect-ratio:1; border-radius:50%; background:#121a2d; border:1px solid #283455;
+  font-size:19px; display:grid; place-items:center; transition:transform .08s}
+.avatar-pick button:active{transform:scale(.9)}
+.avatar-pick button.sel{border-color:var(--gold); background:#1b2542; box-shadow:0 0 0 2px var(--gold-dim)}
 .field{background:#121a2d; border:1px solid #283455; border-radius:14px; padding:14px 16px;
   font-size:16px; color:var(--text); width:100%; outline:none; text-align:center; letter-spacing:.08em}
 .field:focus{border-color:var(--gold-deep)}
@@ -94,7 +100,7 @@ input{font-family:var(--jp)}
 .felt svg text{font-family:var(--disp); font-weight:600; letter-spacing:6px; fill:rgba(217,179,108,.22); font-size:11px}
 .felt .innerline{position:absolute; inset:13%; border-radius:48%/40%; border:1px solid rgba(217,179,108,.14)}
 
-.center{position:absolute; left:50%; top:44%; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; gap:8px; width:88%}
+.center{position:absolute; left:50%; top:31%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:7px; width:90%}
 .potpill{display:flex; align-items:center; gap:8px; background:rgba(7,11,20,.78); border:1px solid var(--gold-dim);
   border-radius:999px; padding:7px 20px; font-size:18px; font-weight:900; backdrop-filter:blur(2px); letter-spacing:.02em}
 .potpill .p-lbl{font-size:10px; letter-spacing:.25em; color:var(--gold); font-weight:700}
@@ -108,8 +114,10 @@ input{font-family:var(--jp)}
 .card .s{font-size:18px; line-height:1.1}
 .card.red{color:var(--red)}
 .card.slot{background:rgba(255,255,255,.05); border:1px dashed rgba(217,179,108,.25); box-shadow:none}
-.card.deal{animation:dealin .35s ease-out}
-@keyframes dealin{from{transform:translateY(-14px) scale(.7); opacity:0}to{transform:none; opacity:1}}
+.card.deal{animation:dealin .4s ease-out backwards}
+@keyframes dealin{from{transform:translateY(-16px) scale(.7); opacity:0}to{transform:none; opacity:1}}
+.card.win{box-shadow:0 0 0 2px var(--gold), 0 0 14px 2px rgba(217,179,108,.7); transform:translateY(-4px); z-index:2}
+.card.sm.win{box-shadow:0 0 0 2px var(--gold), 0 0 10px 1px rgba(217,179,108,.7); transform:translateY(-2px)}
 .card.back{background:linear-gradient(135deg,#2A3A63,#1A2540); border:1px solid #3A4B77}
 .card.back::after{content:""; position:absolute; inset:4px; border-radius:4px; border:1px solid rgba(217,179,108,.4);
   background:repeating-linear-gradient(45deg, transparent 0 4px, rgba(217,179,108,.13) 4px 5px)}
@@ -149,14 +157,14 @@ input{font-family:var(--jp)}
 .betchip::before{content:""; width:11px; height:11px; border-radius:50%;
   background:repeating-conic-gradient(var(--gold) 0 30deg, #fff 30deg 60deg); border:1px solid #00000055}
 
-/* result banner */
-.banner{position:absolute; left:50%; top:44%; transform:translate(-50%,-50%); z-index:8; width:86%;
-  background:rgba(7,11,20,.92); border:1px solid var(--gold-dim); border-radius:16px; padding:13px 16px;
-  text-align:center; backdrop-filter:blur(4px); animation:pop2 .3s ease-out}
-@keyframes pop2{from{transform:translate(-50%,-46%) scale(.92); opacity:0}to{transform:translate(-50%,-50%) scale(1); opacity:1}}
-.banner .b-title{font-size:14px; font-weight:900; color:var(--gold)}
-.banner .b-sub{font-size:11px; color:var(--text); margin-top:4px; line-height:1.7}
-.banner .b-hand{display:inline-block; font-size:10px; letter-spacing:.15em; color:var(--mint); border:1px solid rgba(87,214,160,.4); border-radius:999px; padding:2px 10px; margin-top:6px}
+/* result strip (in center column, below POT) */
+.result-strip{margin-top:4px; max-width:248px; width:84%;
+  background:rgba(7,11,20,.92); border:1px solid var(--gold-dim); border-radius:14px; padding:9px 14px;
+  text-align:center; backdrop-filter:blur(4px); animation:fadein .4s ease-out backwards}
+@keyframes fadein{from{transform:translateY(8px); opacity:0}to{transform:none; opacity:1}}
+.b-title{font-size:14px; font-weight:900; color:var(--gold); line-height:1.5}
+.b-sub{font-size:11px; color:var(--text); margin-top:3px; line-height:1.6}
+.b-hand{display:inline-block; font-size:11px; letter-spacing:.1em; color:var(--mint); border:1px solid rgba(87,214,160,.4); border-radius:999px; padding:1px 9px; vertical-align:middle}
 
 /* ---------- ACTION DOCK ---------- */
 .dock{padding:6px 14px calc(12px + env(safe-area-inset-bottom)); display:flex; flex-direction:column; gap:7px}
@@ -284,6 +292,8 @@ body.my-turn .dock{background:radial-gradient(120% 130% at 50% 120%, rgba(217,17
   <div class="wordmark">FRIENDS<br>HOLD'EM<small>仲間うちポーカートーナメント</small></div>
   <div class="suitline">♠ ♥ ♦ ♣</div>
   <div class="panel">
+    <div class="pick-lbl">アバターを選ぶ</div>
+    <div class="avatar-pick" id="avatar-pick"></div>
     <input class="field" id="in-name" maxlength="8" placeholder="ニックネーム（8文字まで）">
     <button class="btn btn-gold" id="bt-create">ルームを作成</button>
     <div class="divider">または</div>
@@ -404,6 +414,8 @@ const FOLDWIN_MS = 3200;
 const POLL_MS    = 1200;
 const PLACE_POINTS = [0,10,7,5,3,2,1,1,1]; // 順位→獲得ポイント（1位=10）
 const EMOJI = ['🦊','🐼','🐯','🦉','🐸','🐙','🦁','🐰'];
+const AVATARS = ['🦊','🐼','🐯','🦉','🐸','🐙','🦁','🐰','🐵','🐨','🐺','🐲','🦄','🐷','🐮','🐧'];
+const avatarOf = p => (p && p.avatar) || EMOJI[(p?p.seat:0)%8];
 const SUITS = ['♠','♥','♦','♣'];
 const HANDNAMES = ['ハイカード','ワンペア','ツーペア','スリーカード','ストレート','フラッシュ','フルハウス','フォーカード','ストレートフラッシュ'];
 const PHASE_LBL = {preflop:'PRE-FLOP', flop:'FLOP', turn:'TURN', river:'RIVER', showdown:'SHOWDOWN'};
@@ -419,6 +431,7 @@ let busyWrite = false;
 let lastTurnKey = '';     // 自分の手番開始を検知するためのキー
 let audioCtx = null;
 let soundOn = true;
+let myAvatar = AVATARS[0];
 
 /* ================= サウンド / 触覚 ================= */
 function initAudio(){
@@ -453,8 +466,8 @@ function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('on'
 function cardRank(c){ return (c>>2)+2; }
 function cardSuit(c){ return c&3; }
 function rankStr(r){ return r===14?'A':r===13?'K':r===12?'Q':r===11?'J':r===10?'10':''+r; }
-function cardHTML(c, cls=''){ const r=cardRank(c), s=cardSuit(c); const red=(s===1||s===2)?' red':'';
-  return `<div class="card${red} ${cls}"><span class="r">${rankStr(r)}</span><span class="s">${SUITS[s]}</span></div>`; }
+function cardHTML(c, cls='', attr=''){ const r=cardRank(c), s=cardSuit(c); const red=(s===1||s===2)?' red':'';
+  return `<div class="card${red} ${cls}" ${attr}><span class="r">${rankStr(r)}</span><span class="s">${SUITS[s]}</span></div>`; }
 function backHTML(cls=''){ return `<div class="card back ${cls}"></div>`; }
 function mmss(ms){ ms=Math.max(0,ms); const s=Math.ceil(ms/1000); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
 
@@ -499,6 +512,15 @@ function eval7(cards){
     if(!best||cmpScore(s,best)>0) best=s;
   }
   return best;
+}
+function best5(cards){ // 役を構成する5枚を返す
+  let best=null, bestCards=null;
+  for(let i=0;i<7;i++)for(let j=i+1;j<7;j++){
+    const five=[]; for(let k=0;k<7;k++) if(k!==i&&k!==j) five.push(cards[k]);
+    const s=eval5(five);
+    if(!best||cmpScore(s,best)>0){ best=s; bestCards=five.slice(); }
+  }
+  return bestCards||[];
 }
 function scoreName(s){ if(s[0]===8&&s[1]===14) return 'ロイヤルフラッシュ'; return HANDNAMES[s[0]]; }
 
@@ -663,9 +685,10 @@ function doShowdown(room, t){
       const pl=room.players.find(p=>p.id===id); pl.chips+=g; });
     if(idx===0){ mainName=names[ws[0]]; mainWinners=ws; }
   });
+  const winCards = (mainWinners[0] && h.p[mainWinners[0]]) ? best5([...h.p[mainWinners[0]].hole, ...h.board]) : [];
   h.result = { type:'showdown',
     winners:Object.entries(winTotals).map(([id,amount])=>({id,amount})),
-    mainWinners, mainName, reveals, names, until:t+SHOWDOWN_MS };
+    mainWinners, mainName, reveals, names, winCards, until:t+SHOWDOWN_MS };
 }
 function finishTournament(room){
   const al=room.players.filter(p=>!p.out);
@@ -711,7 +734,7 @@ async function createRoom(){
   const code = Array.from({length:4},()=> 'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.floor(Math.random()*24)]).join('');
   myId=rid(); myName=name; roomCode=code;
   const room={ v:0, code, status:'lobby', hostId:myId, createdAt:now(), points:{}, games:0,
-    players:[{id:myId, name, seat:0, chips:START_STACK, out:false, place:null, extLeft:MAX_EXT}] };
+    players:[{id:myId, name, seat:0, chips:START_STACK, out:false, place:null, extLeft:MAX_EXT, avatar:myAvatar}] };
   if(await save(room)){ S=room; enterLobby(); } else $('bt-create').disabled=false;
 }
 async function joinRoom(){
@@ -733,7 +756,7 @@ async function joinRoom(){
   if(room.status!=='lobby'){ $('home-err').textContent='このルームは対戦中です（同じ名前なら復帰できます）'; $('bt-join').disabled=false; return; }
   if(room.players.length>=8){ $('home-err').textContent='満席です（最大8人）'; $('bt-join').disabled=false; return; }
   myId=rid(); myName=name; roomCode=code;
-  room.players.push({id:myId, name, seat:room.players.length, chips:START_STACK, out:false, place:null, extLeft:MAX_EXT});
+  room.players.push({id:myId, name, seat:room.players.length, chips:START_STACK, out:false, place:null, extLeft:MAX_EXT, avatar:myAvatar});
   if(await save(room)){ S=room; enterLobby(); } else $('bt-join').disabled=false;
 }
 function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $(id).classList.add('on'); }
@@ -910,7 +933,7 @@ function renderLobby(){
   const r=$('lb-roster'); 
   r.innerHTML = S.players.map((p,i)=>`
     <div class="roster-item">
-      <div class="face">${EMOJI[p.seat%8]}</div>
+      <div class="face">${avatarOf(p)}</div>
       <div><div class="nm">${esc(p.name)}</div></div>
       ${p.id===S.hostId?'<div class="tag">HOST</div>':''}
       ${p.id===myId&&p.id!==S.hostId?'<div class="tag" style="color:var(--muted);border-color:#344261">YOU</div>':''}
@@ -935,7 +958,6 @@ function renderGame(force=false){
   if(!S.hand) return;
   if(!force && S.v===lastRenderV) return;
   const h=S.hand;
-  const newBoard = h.board.length!==prevBoardLen;
   // 自分の手番開始を検知 → 音＋触覚＋視覚
   const me0 = S.players.find(p=>p.id===myId);
   const myTurnNow = !h.result && me0 && h.turnSeat===me0.seat && h.p[me0.id] && !h.p[me0.id].folded && !h.p[me0.id].allin;
@@ -947,19 +969,46 @@ function renderGame(force=false){
   const [sb,bb]=LEVELS[h.level];
   $('tb-lv').textContent='Lv.'+(h.level+1);
   $('tb-blinds').textContent=fmt(sb)+'/'+fmt(bb)+' ('+fmt(h.bbAnte||bb)+')';
-  // 中央
+  // 中央（ボード＋POT＋結果を縦に積む＝重ならない）
   let pot=0, bets=0;
   for(const id in h.p){ pot+=h.p[id].committed; bets+=h.p[id].bet; }
   const displayPot = h.phase==='showdown' ? pot : pot-bets;
+  const winSet = (h.result && h.result.winCards) ? h.result.winCards : [];
+  const newFrom = prevBoardLen;
   let boardHtml='';
   for(let i=0;i<5;i++){
-    if(i<h.board.length) boardHtml+=cardHTML(h.board[i], (newBoard&&i>=prevBoardLen)?'deal':'');
-    else boardHtml+='<div class="card slot"></div>';
+    if(i<h.board.length){
+      const isNew = i>=newFrom;
+      const win = winSet.includes(h.board[i]);
+      const attr = isNew ? `style="animation-delay:${(i-newFrom)*0.5}s"` : '';
+      boardHtml += cardHTML(h.board[i], (isNew?'deal ':'')+(win?'win':''), attr);
+    } else boardHtml+='<div class="card slot"></div>';
+  }
+  const newCount = Math.max(0, h.board.length - prevBoardLen);
+  let resultHtml='';
+  if(h.result){
+    const r=h.result;
+    const nameOf=id=>{const p=S.players.find(x=>x.id===id);return p?p.name:'?';};
+    let title, sub='', handPill='';
+    if(r.type==='fold'){
+      title=`${esc(nameOf(r.winners[0].id))} がポット獲得`;
+      sub=`+${fmt(r.winners[0].amount)}`;
+    }else{
+      const mw=r.mainWinners.map(nameOf).map(esc).join('・');
+      title=`${mw} の勝ち`;
+      sub=r.winners.map(w=>`${esc(nameOf(w.id))} +${fmt(w.amount)}`).join('　');
+      handPill=`<span class="b-hand">${r.mainName}</span>`;
+    }
+    const delay = newCount*0.5 + 0.25;
+    resultHtml=`<div class="result-strip" style="animation-delay:${delay}s">
+        <div class="b-title">${title} ${handPill}</div>
+        <div class="b-sub">${sub}</div></div>`;
   }
   $('g-center').innerHTML=`
     <div class="phase-lbl">${PHASE_LBL[h.phase]||''} ・ HAND #${h.num}</div>
     <div class="board">${boardHtml}</div>
-    <div class="potpill"><span class="p-lbl">POT</span>${fmt(displayPot)}</div>`;
+    <div class="potpill"><span class="p-lbl">POT</span>${fmt(displayPot)}</div>
+    ${resultHtml}`;
   prevBoardLen=h.board.length;
   // 座席
   const me=S.players.find(p=>p.id===myId);
@@ -972,7 +1021,8 @@ function renderGame(force=false){
     const winRes = h.result && h.result.winners.find(w=>w.id===p.id);
     let cards='';
     if(hp && !folded && !p.out){
-      if(h.result && h.result.reveals[p.id]) cards = h.result.reveals[p.id].map(c=>cardHTML(c,'sm')).join('');
+      const isWinner = h.result && h.result.mainWinners && h.result.mainWinners[0]===p.id;
+      if(h.result && h.result.reveals[p.id]) cards = h.result.reveals[p.id].map(c=>cardHTML(c,'sm'+(isWinner&&winSet.includes(c)?' win':''))).join('');
       else if(!isMe) cards = backHTML('sm')+backHTML('sm');
     }
     const resName = (h.result && h.result.names && h.result.names[p.id]) ? `<div class="resultname">${h.result.names[p.id]}</div>` : '';
@@ -984,7 +1034,7 @@ function renderGame(force=false){
            style="left:${pos.x}%;top:${pos.y}%" data-seat="${p.seat}">
         ${bub}
         <div class="ring" ${isTurn?`data-deadline="${h.deadline}"`:''}>
-          <div class="face">${EMOJI[p.seat%8]}</div>
+          <div class="face">${avatarOf(p)}</div>
           ${isTurn?'<div class="deadcnt" data-cnt></div>':''}
           ${h.dealerSeat===p.seat&&!p.out?'<div class="dbtn">D</div>':''}
         </div>
@@ -1000,22 +1050,7 @@ function renderGame(force=false){
     }
   }
   $('g-seats').innerHTML=seatsHtml+betsHtml;
-  // 結果バナー
-  if(h.result){
-    const r=h.result;
-    const nameOf=id=>{const p=S.players.find(x=>x.id===id);return p?p.name:'?';};
-    let title,sub='',hand='';
-    if(r.type==='fold'){
-      title=`${esc(nameOf(r.winners[0].id))} がポットを獲得`;
-      sub=`+${fmt(r.winners[0].amount)}`;
-    }else{
-      const mw=r.mainWinners.map(nameOf).map(esc).join('・');
-      title=`${mw} の勝ち`;
-      sub=r.winners.map(w=>`${esc(nameOf(w.id))} +${fmt(w.amount)}`).join('　');
-      hand=`<div class="b-hand">${r.mainName}</div>`;
-    }
-    $('g-banner').innerHTML=`<div class="banner"><div class="b-title">${title}</div><div class="b-sub">${sub}</div>${hand}</div>`;
-  } else $('g-banner').innerHTML='';
+  $('g-banner').innerHTML='';
   renderDock();
   lastRenderV=S.v;
 }
@@ -1027,7 +1062,9 @@ function renderDock(){
     return;
   }
   const hp=h.p[me.id];
-  const myCards = hp ? hp.hole.map(c=>cardHTML(c)).join('') : backHTML()+backHTML();
+  const iWon = h.result && h.result.mainWinners && h.result.mainWinners[0]===me.id;
+  const wSet = (h.result && h.result.winCards) ? h.result.winCards : [];
+  const myCards = hp ? hp.hole.map(c=>cardHTML(c, iWon&&wSet.includes(c)?'win':'')).join('') : backHTML()+backHTML();
   const myTurn = !h.result && h.turnSeat===me.seat && hp && !hp.folded && !hp.allin;
   let statusTxt='';
   if(hp&&hp.folded) statusTxt='フォールドしました ─ 次のハンドまで待機';
@@ -1099,7 +1136,7 @@ function renderFinale(){
     <div class="standings">
       ${ranked.map((p,i)=>`<div class="row ${p.id===myId?'mine':''}">
         <span class="pl">${medals[i]||(i+1)}</span>
-        <span class="who">${EMOJI[p.seat%8]} ${esc(p.name)}</span>
+        <span class="who">${avatarOf(p)} ${esc(p.name)}</span>
         ${p.lastGain?`<span class="gain">+${p.lastGain}</span>`:''}
         <span class="pts">${pts[p.id]||0}<small>pt</small></span>
       </div>`).join('')}
@@ -1168,6 +1205,16 @@ $('sheet-veil').addEventListener('click', closeSheet);
 $('bt-create').addEventListener('click', createRoom);
 $('bt-join').addEventListener('click', joinRoom);
 $('bt-start').addEventListener('click', startGame);
+function buildAvatarPicker(){
+  const el=$('avatar-pick');
+  el.innerHTML = AVATARS.map((a,i)=>`<button data-i="${i}" class="${a===myAvatar?'sel':''}">${a}</button>`).join('');
+  el.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    myAvatar=AVATARS[+b.dataset.i];
+    el.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel');
+  });
+}
+buildAvatarPicker();
 $('bt-copy').addEventListener('click', async()=>{
   try{ await navigator.clipboard.writeText(roomCode); toast('コードをコピーしました'); }
   catch(e){ toast('コード: '+roomCode); }
